@@ -243,6 +243,12 @@ func (dc *DeployCommand) RunDeploy(ctx context.Context, cwd string, deployOption
 			}
 		}
 
+		if deployOptions.Dependencies {
+			for _, dep := range deployOptions.Manifest.Dependencies {
+				deployOptions.Manifest.Deploy.Commands = append(deployOptions.Manifest.Deploy.Commands, dep.TransformToPipelineCommand())
+			}
+		}
+
 		var parsedCommands []string
 		for _, command := range deployOptions.Manifest.Deploy.Commands {
 			parsedCommands = append(parsedCommands, expandManifestEnvVars(command))
