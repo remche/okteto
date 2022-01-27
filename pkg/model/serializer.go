@@ -664,13 +664,14 @@ func (d *Dev) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 type manifestRaw struct {
-	Namespace string        `json:"namespace,omitempty" yaml:"namespace,omitempty"`
-	Context   string        `json:"context,omitempty" yaml:"context,omitempty"`
-	Icon      string        `json:"icon,omitempty" yaml:"icon,omitempty"`
-	Deploy    *DeployInfo   `json:"deploy,omitempty" yaml:"deploy,omitempty"`
-	Dev       ManifestDevs  `json:"dev,omitempty" yaml:"dev,omitempty"`
-	Destroy   []string      `json:"destroy,omitempty" yaml:"destroy,omitempty"`
-	Build     ManifestBuild `json:"build,omitempty" yaml:"build,omitempty"`
+	Namespace    string               `json:"namespace,omitempty" yaml:"namespace,omitempty"`
+	Context      string               `json:"context,omitempty" yaml:"context,omitempty"`
+	Icon         string               `json:"icon,omitempty" yaml:"icon,omitempty"`
+	Deploy       *DeployInfo          `json:"deploy,omitempty" yaml:"deploy,omitempty"`
+	Dev          ManifestDevs         `json:"dev,omitempty" yaml:"dev,omitempty"`
+	Destroy      []string             `json:"destroy,omitempty" yaml:"destroy,omitempty"`
+	Build        ManifestBuild        `json:"build,omitempty" yaml:"build,omitempty"`
+	Dependencies ManifestDependencies `json:"dependencies,omitempty" yaml:"dependencies,omitempty"`
 
 	DeprecatedDevs []string `yaml:"devs"`
 }
@@ -687,7 +688,8 @@ func (d *Manifest) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	manifest := manifestRaw{
-		Dev: make(map[string]*Dev),
+		Dev:          make(map[string]*Dev),
+		Dependencies: map[string]*Dependency{},
 	}
 	err = unmarshal(&manifest)
 	if err != nil {
@@ -700,6 +702,7 @@ func (d *Manifest) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	d.Build = manifest.Build
 	d.Namespace = manifest.Namespace
 	d.Context = manifest.Context
+	d.Dependencies = manifest.Dependencies
 	return nil
 }
 
