@@ -19,6 +19,7 @@ import (
 	"os"
 
 	contextCMD "github.com/okteto/okteto/cmd/context"
+	"github.com/okteto/okteto/cmd/pipeline"
 	"github.com/okteto/okteto/cmd/utils"
 	"github.com/okteto/okteto/pkg/k8s/namespaces"
 	"github.com/okteto/okteto/pkg/k8s/secrets"
@@ -157,7 +158,9 @@ func (dc *destroyCommand) runDestroy(ctx context.Context, cwd string, opts *Opti
 
 		if len(manifest.Dependencies) > 0 {
 			for depName := range manifest.Dependencies {
-				manifest.Destroy = append(manifest.Destroy, fmt.Sprintf("okteto pipeline destroy -p %s", depName))
+				if _, err := pipeline.DestroyPipeline(ctx, depName, opts.DestroyVolumes); err != nil {
+					return err
+				}
 			}
 
 		}
