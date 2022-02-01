@@ -243,7 +243,7 @@ func (dc *DeployCommand) RunDeploy(ctx context.Context, cwd string, deployOption
 			}
 		}
 
-		if deployOptions.Dependencies {
+		if deployOptions.Dependencies && okteto.IsOkteto() {
 			for depName, dep := range deployOptions.Manifest.Dependencies {
 				if dep.Repository != "" || dep.ManifestPath != "" {
 					depCommand := dep.TransformToPipelineCommand(depName)
