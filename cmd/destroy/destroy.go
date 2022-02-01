@@ -145,6 +145,24 @@ func (dc *destroyCommand) runDestroy(ctx context.Context, cwd string, opts *Opti
 		}
 	}
 
+	if contextCMD.IsManifestV2Enabled() {
+		manifest, err = contextCMD.GetManifestV2(cwd, opts.ManifestPath)
+		if err != nil {
+			// Log error message but application can still be deleted
+			oktetoLog.Infof("could not find manifest file to be executed: %s", err)
+			manifest = &model.Manifest{
+				Destroy: []string{},
+			}
+		}
+
+		if len(manifest.Dependencies) > 0 {
+			for depName := range manifest.Dependencies {
+				manifest.Destroy = append(manifest.Destroy, fmt.Sprintf("okteto pipeline destroy -p %s", depName))
+			}
+
+		}
+	}
+
 	var commandErr error
 	for _, command := range manifest.Destroy {
 		if err := dc.executor.Execute(command, opts.Variables); err != nil {
