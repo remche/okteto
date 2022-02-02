@@ -190,7 +190,7 @@ func (dc *DeployCommand) RunDeploy(ctx context.Context, cwd string, deployOption
 	var err error
 	if utils.LoadBoolean(model.OktetoManifestV2Enabled) {
 		if deployOptions.Dependencies && !okteto.IsOkteto() {
-			return fmt.Errorf("deploy of dependencies is only availbale for Okteto instances")
+			return fmt.Errorf("deploy of dependencies is only available for Okteto instances")
 		}
 
 		deployOptions.Manifest, err = contextCMD.GetManifestV2(cwd, deployOptions.ManifestPath)
