@@ -146,7 +146,7 @@ func (dc *destroyCommand) runDestroy(ctx context.Context, cwd string, opts *Opti
 		}
 	}
 
-	if contextCMD.IsManifestV2Enabled() {
+	if utils.LoadBoolean(model.OktetoManifestV2Enabled) {
 		manifest, err = contextCMD.GetManifestV2(cwd, opts.ManifestPath)
 		if err != nil {
 			// Log error message but application can still be deleted
