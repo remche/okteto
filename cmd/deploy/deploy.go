@@ -370,7 +370,15 @@ func expandManifestEnvVars(manifest string) string {
 
 func deployDependency(ctx context.Context, name string, dependency *model.Dependency) error {
 
-	resp, err := pipeline.DeployPipeline(ctx, name, dependency.Repository, dependency.Branch, dependency.ManifestPath, model.SerializeBuildArgs(dependency.Variables))
+	pipOpts := &pipeline.DeployOptions{
+		Name:       name,
+		Repository: dependency.Repository,
+		Branch:     dependency.Branch,
+		File:       dependency.ManifestPath,
+		Variables:  model.SerializeBuildArgs(dependency.Variables),
+	}
+
+	resp, err := pipeline.DeployPipeline(ctx, pipOpts)
 	if err != nil {
 		return err
 	}
