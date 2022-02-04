@@ -238,6 +238,7 @@ func (dc *deployCommand) runDeploy(ctx context.Context, cwd string, deployOption
 		}
 
 		exit := make(chan error, 1)
+		numOfChecks := len(deployOptions.Manifest.Build)
 		for service, mOptions := range deployOptions.Manifest.Build {
 
 			go func(service string, mOptions *model.BuildInfo) {
@@ -253,9 +254,8 @@ func (dc *deployCommand) runDeploy(ctx context.Context, cwd string, deployOption
 
 		}
 
-		for i := 0; i < 2; i++ {
-			err, ok := <-exit
-			oktetoLog.Debugf("HOLA********** %v %v %v", err, ok, i)
+		for i := 0; i < numOfChecks; i++ {
+			err := <-exit
 			if err != nil {
 				return err
 			}
